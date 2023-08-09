@@ -1,20 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./nevbarStyle.css";
 export default function Nevbar() {
   const [openNevBar, setOpenNevBar] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+
+  const sections = ['hero', 'about','resume', 'portfolio', 'services','contact']; // Replace with your section IDs
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const observerOptions = {
+        rootMargin: '-50% 0px -50% 0px', // Adjust the root margin as needed
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          observer.observe(element);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   return (
     <>
       <i
         onClick={() => {
-          
-        //   alert("work");
+          //   alert("work");
           setOpenNevBar(!openNevBar);
-          
         }}
-        className={`bi  mobile-nav-toggle d-xl-none ${openNevBar ? 'bi-x' : 'bi-list' }`}
+        className={`bi  mobile-nav-toggle d-xl-none ${
+          openNevBar ? "bi-x" : "bi-list"
+        }`}
       ></i>
 
-      <div  className={` ${openNevBar ? 'mobile-nav-active' : 'nevBar' }`}>
+      <div className={` ${openNevBar ? "mobile-nav-active" : "nevBar"}`}>
         <header id="header">
           <div className="d-flex flex-column">
             <div className="profile">
@@ -63,33 +95,33 @@ export default function Nevbar() {
             <nav id="navbar" className="nav-menu navbar">
               <ul>
                 <li>
-                  <a href="/hero" className="nav-link scrollto active">
+                  <a href="#hero" className={`nav-link scrollto ${activeSection === 'hero' ? 'active' : ''}`}>
                     <i className="bx bx-home"></i> <span>Home</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/about" className="nav-link scrollto">
+                  <a href="#about" className={`nav-link scrollto ${activeSection === 'about' ? 'active' : ''}`}>
                     <i className="bx bx-user"></i> <span>About</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/resume" className="nav-link scrollto">
+                  <a href="#resume" className={`nav-link scrollto ${activeSection === 'resume' ? 'active' : ''}`}>
                     <i className="bx bx-file-blank"></i> <span>Resume</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/portfolio" className="nav-link scrollto">
+                  <a href="#portfolio" className={`nav-link scrollto ${activeSection === 'portfolio' ? 'active' : ''}`}>
                     <i className="bx bx-book-content"></i>{" "}
                     <span>Portfolio</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/services" className="nav-link scrollto">
+                  <a href="#services" className={`nav-link scrollto ${activeSection === 'services' ? 'active' : ''}`}>
                     <i className="bx bx-server"></i> <span>Services</span>
                   </a>
                 </li>
                 <li>
-                  <a href="/contact" className="nav-link scrollto">
+                  <a href="#contact" className={`nav-link scrollto ${activeSection === 'contact' ? 'active' : ''}`}>
                     <i className="bx bx-envelope"></i> <span>Contact</span>
                   </a>
                 </li>
