@@ -5,7 +5,7 @@ export default function NoPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(!isModalOpen);
   };
 
   const closeModal = () => {
