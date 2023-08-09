@@ -6,21 +6,23 @@ import Layout from "./pages/Layout";
 import Home from "./pages/Home/Home";
 import Blogs from "./pages/Blogs";
 import NoPage from "./pages/NoPage";
-import Nevbar from "./component/nevbar";
+import Nevbar from "./component/nevbar/index";
 import About from "./pages/About";
 import Resume from "./pages/Resume";
-import Skill from './pages/Skill'
+import Skill from './pages/Skill';
+import PortfolioSection from './pages/Portfolio'
 import "./style.css";
 function App() {
   return (
     <div>
       <Nevbar />
       <main id="main">
-      <Home />
+      {/* <Home />
       <About />
       <Skill />
       <Resume />
-      
+      <PortfolioSection /> */}
+      <NoPage />
         {/* <Router>
           <Routes>
             <Route path="/" element={<Home />} />
