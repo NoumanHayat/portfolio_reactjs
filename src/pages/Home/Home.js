@@ -6,7 +6,8 @@ function HeroSection() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
 
   const handleResize = () => {
-    setIsMobile(window.innerWidth <= 1000);
+
+    setIsMobile(window.innerWidth <= 1199);
   };
 
   useEffect(() => {

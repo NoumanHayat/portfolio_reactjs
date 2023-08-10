@@ -11,18 +11,22 @@ import About from "./pages/About";
 import Resume from "./pages/Resume";
 import Skill from './pages/Skill';
 import PortfolioSection from './pages/Portfolio'
+import Services from './pages/Services/index';
 import "./style.css";
+import Contact from "./pages/Contact/index";
 function App() {
   return (
     <div>
       <Nevbar />
       <main id="main">
-      {/* <Home />
+       <Home />
       <About />
       <Skill />
       <Resume />
-      <PortfolioSection /> */}
-      <NoPage />
+      <PortfolioSection /> 
+      <Services />
+      <Contact />
+      {/* <NoPage /> */}
         {/* <Router>
           <Routes>
             <Route path="/" element={<Home />} />
