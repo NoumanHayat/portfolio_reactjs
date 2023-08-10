@@ -43,7 +43,7 @@ function Contact() {
               <div className="phone">
                 <i className="bi bi-phone"></i>
                 <h4>Call:</h4>
-                <p>+92305 6719020</p>
+                <p><a href="tel:+923056719020">+923056719020</a></p>
               </div>
               <iframe
                 title="Google Map"
