@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 // import { BrowserRouter as Router, Route, Switch,Routes } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home/Home";
 import Blogs from "./pages/Blogs";
@@ -16,9 +16,10 @@ import Services from "./pages/Services/index";
 import "./style.css";
 import Contact from "./pages/Contact/index";
 import ScrollTop from "./component/ScrollTop/index";
-import ChatBot from './chatbot/index'
-function App() {
-  
+import ChatBot from "./chatbot/index";
+import Text from "./test/index"; 
+import Admin from './admin/index';
+function Main() {
   return (
     <div>
       <Nevbar />
@@ -32,17 +33,19 @@ function App() {
         <Contact />
         <ScrollTop />
         <ChatBot />
-        {/* <NoPage /> */}
-        {/* <Router>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/Blogs" element={<Blogs />} />
-            <Route path="*" element={<NoPage />} />
-          </Routes>
-        </Router> */}
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </Router>
   );
 }
 

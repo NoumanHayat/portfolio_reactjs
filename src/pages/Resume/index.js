@@ -23,7 +23,7 @@ function ResumeSection() {
               <ul>
                 <li>Kakaywala Jhawarian Shahpur Sargodha, Punjab Pakistan</li>
                 <li>+92305-6719020</li>
-                <li>me@noumanhayat.com</li>
+                <li>noumanhayathayat@gmail.com</li>
               </ul>
             </div>
 
