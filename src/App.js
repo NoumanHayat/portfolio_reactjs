@@ -32,8 +32,9 @@ function Main() {
         <Services />
         <Contact />
         <ScrollTop />
-        <ChatBot />
+        
       </main>
+      <ChatBot />
     </div>
   );
 }

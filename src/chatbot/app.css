@@ -1,0 +1,10 @@
+.chat-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    /* width: 400px; */
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Add space between messages and input */
+  }

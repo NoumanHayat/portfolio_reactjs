@@ -1,100 +1,148 @@
-import React, { useState } from "react";
-import "./style.css"; // Import your CSS file if you have one
-
-function ChatComponent() {
+import React, { useState, useEffect, useRef } from "react";
+import "./style.css";
+import "./app.css";
+import { Flex } from "@mantine/core";
+const FixedPlugin = () => {
   const [chatLogs, setChatLogs] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isChatBoxOpen, setIsChatBoxOpen] = useState(false);
+  const [chat, setChat] = useState(false);
+  const inputRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState("");
 
-  const generateMessage = (msg, type) => {
-    const newMessage = (
-      <div key={chatLogs.length + 1} className={`chat-msg ${type}`}>
-        {/* <span className="msg-avatar">
-          <img
-            src="https://image.crisp.im/avatar/operator/196af8cc-f6ad-4ef7-afd1-c45d5231387c/240/?1483361727745"
-            alt="Avatar"
-          />
-        </span> */}
-        <div className="cm-msg-text">{msg}</div>
-      </div>
-    );
 
-    setChatLogs((prevLogs) => [...prevLogs, newMessage]);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    const msg = inputValue.trim();
-    if (msg === "") {
-      return;
-    }
-
-    generateMessage(msg, "self");
-
-    const buttons = [
-      { name: "Existing User", value: "existing" },
-      { name: "New User", value: "new" },
-    ];
-
-    setTimeout(() => {
-      generateMessage(msg, "user");
-    }, 1000);
-
-    setInputValue("");
-  };
-
-  const handleButtonClick = (event) => {
-    const value = event.target.getAttribute("chat-value");
-    const name = event.target.innerHTML;
-    generateMessage(name, "self");
-  };
+ 
 
   const toggleChatBox = () => {
     setIsChatBoxOpen((prevState) => !prevState);
   };
+  const LoginInfo = () => {
+    return (
+      <div className="card-body pt-sm-3 pt-0 d-flex align-items-center justify-content-center ">
+        {/* Your card body content goes here */}
+        <div className="card-body pt-sm-3 pt-0 overflow-auto">
+          <div className="mb-3">
+            <input
+              type="Name"
+              className="form-control form-control-lg"
+              placeholder="Name"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="email"
+              className="form-control form-control-lg"
+              placeholder="Email"
+              aria-label="Email"
+            />
+          </div>
+
+          <a
+            className="btn bg-gradient-dark w-100"
+            onClick={() => {
+              setChat(!chat);
+            }}
+          >
+            Continue
+          </a>
+        </div>
+      </div>
+    );
+  };
+
+  const handleSendMessageChat = () => {
+    if (inputText.trim() === "") return;
+
+    const newMessage = {
+      text: inputText,
+      fromUser: true,
+    };
+
+    const newMessage2 = {
+      text: inputText,
+      fromUser: false,
+    };
+    setMessages([...messages, newMessage2, newMessage]);
+
+    setInputText("");
+  };
 
   return (
-    <div className="chatBody">
-      <div
-        id="chat-circle"
-        className="btn btn-raised"
-        style={{ display: isChatBoxOpen ? "none" : "block" }}
-        onClick={toggleChatBox}
-      >
-        <div id="chat-overlay"></div>
-        <i class="bi bi-chat-square-dots-fill"></i>
-      </div>
-      <div
-        className="chat-box"
-        style={{ display: isChatBoxOpen ? "block" : "none" }}
-      >
-        <div className="chat-box-header">
-          ChatBot
-          <span className="chat-box-toggle" onClick={toggleChatBox}>
-            <i class="bi bi bi-x-circle"></i>
-          </span>
-        </div>
-        <div className="chat-box-body">
-          <div className="chat-box-overlay"></div>
-          <div className="chat-logs">{chatLogs}</div>
-        </div>
-        <div className="chat-input">
-          <form onSubmit={handleSendMessage}>
-            <input
-              type="text"
-              id="chat-input"
-              placeholder="Send a message..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-            <button type="submit" className="chat-submit" id="chat-submit">
-              <i className="material-icons">send</i>
-            </button>
-          </form>
+    <div className="g-sidenav-show   bg-gray-100">
+      <div className={`fixed-plugin ${isChatBoxOpen ? "show" : ""} `}>
+        <a
+          onClick={toggleChatBox}
+          className={`fixed-plugin-button  text-dark position-fixed px-3 py-2 ${
+            isChatBoxOpen ? "show" : ""
+          }`}
+        >
+          <i className="fa fa-cog py-2"> </i>
+        </a>
+        <div className="card shadow-lg">
+          <div className="card-header pb-0 pt-3 ">
+            <div className="float-start">
+              <h5 className="mt-3 mb-0">Custom Care</h5>
+              <p>Lets Talk.</p>
+            </div>
+            <div onClick={toggleChatBox} className="float-end mt-4">
+              <button className="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                <i className="fa fa-close"></i>
+              </button>
+            </div>
+          </div>
+          <hr className="horizontal dark my-1" />
+          {/* Here i want to put code */}
+          {chat ? (
+            <>
+              <div className="card-body pt-sm-3 pt-0 overflow-auto" style={{}}>
+                <div className="">
+                  {messages.map((message, index) => (
+                    <div
+                      key={index}
+                      className={`message ${message.fromUser ? "user" : "bot"}`}
+                      style={{ textAlign: ` ${message.fromUser ? "start" : "end"}` }}
+                    >
+                      {message.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="container">
+                <div className="row">
+                  <div className="col-auto">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter text"
+                      value={inputText}
+                      onChange={(event) => {
+                        setInputText(event.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="col-auto">
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSendMessageChat}
+                    >
+                      <i className="fa fa-paper-plane"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <LoginInfo />
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default ChatComponent;
+export default FixedPlugin;
+{
+  /* {chat ? <Chat /> : <LoginInfo />} */
+}

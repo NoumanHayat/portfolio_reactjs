@@ -1,0 +1,80 @@
+.chat-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: auto;
+  }
+  
+  .chat-messages {
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .message {
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+  }
+  
+  .message.user {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+  }
+  
+  .message.bot {
+    background-color: #f0f0f0;
+  }
+  
+  .chat-input {
+    display: flex;
+    padding: 10px;
+  }
+  
+  .chat-input input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  
+  .chat-input button {
+    border-radius: 5px;
+  }
+  
+  
+  .chat-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    /* width: 400px; */
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Add space between messages and input */
+  }
+  
+  /* ... Rest of your CSS ... */
+  
+  .chat-input {
+    display: flex;
+    width: auto;
+    justify-content: center; /* Center horizontally */
+    /* align-items: flex-end; Align at the bottom */
+    padding: 10px;
+  }
+  
+  
+.chat-input input {
+    flex-grow: 1; /* Allow input to take available space */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  
+  .chat-input button {
+    border-radius: 5px;
+  }

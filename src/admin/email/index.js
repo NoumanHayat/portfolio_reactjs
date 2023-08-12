@@ -164,12 +164,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                           </div>
                         </div>
                       </div>
-                      {/* <button
-                        type="submit"
-                        className="btn btn-info btn-fill pull-right"
-                      >
-                        Update Profile
-                      </button> */}
+                      
                       <button
                             type="button"
                             className="btn bg-gradient-info btn-fill pull-right"
