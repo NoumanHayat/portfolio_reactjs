@@ -1,87 +1,104 @@
-import React from 'react';
+import React, { useState } from "react";
+import Modal from "./../../component/ModalChat/index";
 
+import { handleSendMessageChat } from "./../../function/index";
 function Conversations() {
   const conversations = [
-    // Define your conversation data here
     {
-      name: 'Sophie B.',
-      message: 'Hi! I need more information..'
-      
+      name: "Nouman Hayat",
+      email: "noumanhayat35@gmail.com",
+      socketid: "",
+      message: [],
+
       // Add other properties as needed
     },
-    {
-      name: 'Anne Marie',
-      message: 'Awesome work, can you..'
-      // Add other properties as needed
-    },
-    {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-      {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-      {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-      {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-      {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-      {
-        name: 'Sophie B.',
-        message: 'Hi! I need more information..'
-        
-        // Add other properties as needed
-      },
-      {
-        name: 'Anne Marie',
-        message: 'Awesome work, can you..'
-        // Add other properties as needed
-      },
-    // ... more conversation items
   ];
+  const [messages, setMessages] = useState([{role: "user",content:'hello world!'},{role: "system",content:'hello world!'}]);
+  const [inputText, setInputText] = useState("");
+  const Card = ({ conversation }) => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    return (
+      <>
+        <li className="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+          <div className="avatar me-3"></div>
+          <div className="d-flex align-items-start flex-column justify-content-center">
+            <h6 className="mb-0 text-sm">{conversation.name}</h6>
+            <p className="mb-0 text-xs">{conversation.email}</p>
+          </div>
+          <a
+            className="btn btn-link pe-3 ps-0 mb-0 ms-auto"
+            onClick={() => {
+              setModalOpen(true);
+            }}
+          >
+            Reply
+          </a>
+        </li>
+        <Modal
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+          }}
+        >
+          <div className="content">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-md-8">
+                  <div className="card">
+                    <div
+                      className="card-body pt-sm-3 pt-0 overflow-auto"
+                      style={{}}
+                    >
+                      <div className="">
+                        {messages.map((message, index) => (
+                          <div
+                            key={index}
+                            className={`message ${
+                              message.role == "user" ? "user" : "bot"
+                            }`}
+                            style={{
+                              textAlign: ` ${
+                                message.role == "user" ? "start" : "end"
+                              }`,
+                            }}
+                          >
+                            {message.content}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card card-user">
+                    <div className="card-body">
+                      <textarea
+                        rows="4"
+                        cols="80"
+                        className="form-control"
+                        placeholder="Here can be your Message"
+                        value=""
+                      >
+                        Lamborghini Mercy, Your chick she so thirsty, I'm in
+                        that two seat Lambo.
+                      </textarea>
+                    </div>
+
+                    <div className="button-container mr-auto ml-auto">
+                      <button type="button" className="btn bg-gradient-info ">
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </>
+    );
+  };
 
   return (
     <div className="container-fluid py-4">
@@ -94,17 +111,7 @@ function Conversations() {
             <div className="card-body p-3">
               <ul className="list-group">
                 {conversations.map((conversation, index) => (
-                  <li key={index} className="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                    <div className="avatar me-3">
-                      {/* Replace the image source with conversation.avatar */}
-                      <img src={conversation.avatar} alt={conversation.name} className="border-radius-lg shadow" />
-                    </div>
-                    <div className="d-flex align-items-start flex-column justify-content-center">
-                      <h6 className="mb-0 text-sm">{conversation.name}</h6>
-                      <p className="mb-0 text-xs">{conversation.message}</p>
-                    </div>
-                    <a className="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="javascript:;">Reply</a>
-                  </li>
+                  <Card key={index} conversation={conversation} />
                 ))}
               </ul>
             </div>
