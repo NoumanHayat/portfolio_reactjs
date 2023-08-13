@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../../component/ModalAdmin/index";
+import './style.css';
 function EmailInformation() {
   return (
     <div className="row">
@@ -38,6 +39,8 @@ function EmailInformation() {
 
 function EmailItem({ name, companyName, email, vatNumber }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenView, setIsModalOpenView] = useState(false);
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -71,11 +74,18 @@ function EmailItem({ name, companyName, email, vatNumber }) {
         <div className="ms-auto text-end">
           <a
             className="btn btn-link text-danger text-gradient px-3 mb-0"
-            href="#"
+            onClick={() => {
+              setIsModalOpenDelete(true);
+            }}
           >
             <i className="far fa-trash-alt me-2"></i>Delete
           </a>
-          <a className="btn btn-link text-dark px-3 mb-0" href="#">
+          <a
+            className="btn btn-link text-dark px-3 mb-0"
+            onClick={() => {
+              setIsModalOpenView(true);
+            }}
+          >
             <i
               className="fas fa-pencil-alt text-dark me-2"
               aria-hidden="true"
@@ -130,9 +140,8 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                             />
                           </div>
                         </div>
-                       
                       </div>
-                      
+
                       <div className="row">
                         <div className="col-md-10">
                           <div className="form-group">
@@ -145,7 +154,6 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                             />
                           </div>
                         </div>
-                        
                       </div>
                       <div className="row">
                         <div className="col-md-12">
@@ -164,13 +172,13 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                           </div>
                         </div>
                       </div>
-                      
+
                       <button
-                            type="button"
-                            className="btn bg-gradient-info btn-fill pull-right"
-                          >
-                            Send Mail
-                          </button>
+                        type="button"
+                        className="btn bg-gradient-info btn-fill pull-right"
+                      >
+                        Send Mail
+                      </button>
                       <div className="clearfix"></div>
                     </form>
                   </div>
@@ -178,17 +186,19 @@ function EmailItem({ name, companyName, email, vatNumber }) {
               </div>
               <div className="col-md-4">
                 <div className="card card-user">
-                  
                   <div className="card-body">
                     <div className="author">
                       <a href="#">
-                        
                         <h5 className="title">Subject</h5>
                       </a>
-                      
                     </div>
                     <p className="description text-center">
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.
+                      It is a long established fact that a reader will be
+                      distracted by the readable content of a page when looking
+                      at its layout. The point of using Lorem Ipsum is that it
+                      has a more-or-less normal distribution of letters, as
+                      opposed to using 'Content here, content here', making it
+                      look like readable English.
                     </p>
                   </div>
                   <hr />
@@ -212,6 +222,119 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                       <i className="fa fa-google-plus-square"></i>
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isModalOpenView}
+        onClose={() => {
+          setIsModalOpenView(false);
+        }}
+      >
+        <div className="content">
+          <div className="container-fluid">
+            <div className="row">
+              <div className="">
+                <div className="card">
+                  <div className="card-body">
+                    <form>
+                      <div className="row">
+                        <div className="col-md-6 pr-1">
+                          <div className="form-group">
+                            <label>Email</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              disabled
+                              placeholder="email"
+                              value="nouman@gmail.com"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-3 px-1">
+                          <div className="form-group">
+                            <label>Name</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Username"
+                              disabled
+                              value="michael23"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
+                        <div className="col-md-10">
+                          <div className="form-group">
+                            <label>Subject</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Subject here..."
+                              value=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-12">
+                          <div className="form-group">
+                            <label>Message</label>
+                            <textarea
+                              rows="4"
+                              cols="80"
+                              className="form-control"
+                              placeholder="Here can be your Message"
+                              value=""
+                            >
+                              Lamborghini Mercy, Your chick she so thirsty, I'm
+                              in that two seat Lambo.
+                            </textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="clearfix"></div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isModalOpenDelete}
+        onClose={() => {
+          setIsModalOpenDelete(false);
+        }}
+      >
+        <div className="content">
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-md-8">
+                <div className="card">
+                  <div className="card-header">
+                    <h4 className="card-title">
+                      Are you sure you want to Delete?
+                    </h4>
+                  </div>
+                  <div className="button-row button-container">
+                  <button
+                        type="button"
+                        className="btn bg-gradient-info btn-fill pull-right"
+                      >
+                        Yes
+                      </button>
+                    
+                    <button className="btn btn-danger">No</button>
+                  </div>
+                  
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import "./app.css";
 import { Flex } from "@mantine/core";
+import {handleSendMessageChat} from './../function/index'
 const FixedPlugin = () => {
   const [chatLogs, setChatLogs] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -51,22 +52,22 @@ const FixedPlugin = () => {
     );
   };
 
-  const handleSendMessageChat = () => {
-    if (inputText.trim() === "") return;
+  // const handleSendMessageChat = () => {
+  //   if (inputText.trim() === "") return;
 
-    const newMessage = {
-      text: inputText,
-      fromUser: true,
-    };
+  //   const newMessage = {
+  //     text: inputText,
+  //     fromUser: true,
+  //   };
 
-    const newMessage2 = {
-      text: inputText,
-      fromUser: false,
-    };
-    setMessages([...messages, newMessage2, newMessage]);
+  //   const newMessage2 = {
+  //     text: inputText,
+  //     fromUser: false,
+  //   };
+  //   setMessages([...messages, newMessage2, newMessage]);
 
-    setInputText("");
-  };
+  //   setInputText("");
+  // };
 
   return (
     <div className="g-sidenav-show   bg-gray-100">
@@ -77,7 +78,7 @@ const FixedPlugin = () => {
             isChatBoxOpen ? "show" : ""
           }`}
         >
-          <i className="fa fa-cog py-2"> </i>
+          <i style={{color:"black"}} className="fa fa-cog py-2"> </i>
         </a>
         <div className="card shadow-lg">
           <div className="card-header pb-0 pt-3 ">
@@ -87,7 +88,7 @@ const FixedPlugin = () => {
             </div>
             <div onClick={toggleChatBox} className="float-end mt-4">
               <button className="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                <i className="fa fa-close"></i>
+                <i style={{color:"black"}} className="fa fa-close"></i>
               </button>
             </div>
           </div>
@@ -100,10 +101,10 @@ const FixedPlugin = () => {
                   {messages.map((message, index) => (
                     <div
                       key={index}
-                      className={`message ${message.fromUser ? "user" : "bot"}`}
-                      style={{ textAlign: ` ${message.fromUser ? "start" : "end"}` }}
+                      className={`message ${message.role=='user' ? "user" : "bot"}`}
+                      style={{ textAlign: ` ${message.role =='user' ? "start" : "end"}` }}
                     >
-                      {message.text}
+                      {message.content}
                     </div>
                   ))}
                 </div>
@@ -125,9 +126,9 @@ const FixedPlugin = () => {
                   <div className="col-auto">
                     <button
                       className="btn btn-primary"
-                      onClick={handleSendMessageChat}
+                      onClick={async ()=>{const responce =await handleSendMessageChat(messages,inputText); setMessages(responce);setInputText('');}}
                     >
-                      <i className="fa fa-paper-plane"></i>
+                      <i  className="fa fa-paper-plane"></i>
                     </button>
                   </div>
                 </div>

@@ -121,6 +121,9 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
 
+
+  
+
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };

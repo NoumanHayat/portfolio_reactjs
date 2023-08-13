@@ -27,7 +27,7 @@ function BackToTopButton() {
 
   return (
     <div className={`back-to-top ${isVisible ? '' : 'hidden'} d-flex align-items-center justify-content-center`} onClick={handleBackToTop}>
-      <i class="bi bi-arrow-up-short"></i>
+      <i className="bi bi-arrow-up-short"></i>
     </div>
   );
 }
