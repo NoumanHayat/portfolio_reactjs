@@ -1,23 +1,26 @@
 import io from "socket.io-client";
-import axios from 'axios';
+import axios from "axios";
 export const testingFunction = (value) => {
   console.log("Working ...");
-  const newSocket = io("http://localhost:3000");
+  const newSocket = io("http://localhost:5000/");
   newSocket.emit("message", { message: "my message is here" }); // Replace with your server URL
   newSocket.on("message", (data) => {
     alert(data);
   });
+  newSocket.on("sendMessage",(data) => {
+    alert(data);
+  })
 };
 
 export const loginCheck = () => {
   console.log("Working");
   return true;
 };
-export const chatGpt = async (messages,inputText) => {
-  if (inputText.trim() === ""){
-    alert('Please enter a message');
+export const chatGpt = async (messages, inputText) => {
+  if (inputText.trim() === "") {
+    alert("Please enter a message");
     return;
-  } 
+  }
   const response = await axios.post(
     "https://api.openai.com/v1/chat/completions",
     {
@@ -47,13 +50,13 @@ export const chatGpt = async (messages,inputText) => {
     { role: "user", content: inputText },
     { role: "system", content: response.data.choices[0].message.content },
   ];
-  return(newMessages);
+  return newMessages;
 };
-export const handleSendMessageChat = async (messages,inputText) => {
-  if (inputText.trim() === ""){
-    alert('Please enter a message');
+export const handleSendMessageChat = async (messages, inputText) => {
+  if (inputText.trim() === "") {
+    alert("Please enter a message");
     return;
-  } 
+  }
   const response = await axios.post(
     "https://api.openai.com/v1/chat/completions",
     {
@@ -84,7 +87,25 @@ export const handleSendMessageChat = async (messages,inputText) => {
     { role: "system", content: response.data.choices[0].message.content },
   ];
   console.log(newMessages);
-  return(newMessages);
+  return newMessages;
 };
+export const sendMail = async ( name='', email='n@gmail.com', subject='', message='' ) => {
+  console.log("Here is your message");
 
-export default { loginCheck, testingFunction };
+  const response = await axios.post(
+    "//localhost:5000/api/Contact",
+    {
+      name, email, subject, message
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  alert("Thanks for sending us messages we will contact you through email");
+  return response;
+};
+export const clientSiket = async ()=>{
+
+}

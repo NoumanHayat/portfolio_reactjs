@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import "./app.css";
 import { Flex } from "@mantine/core";
-import {handleSendMessageChat} from './../function/index'
+import io from "socket.io-client";
+
+import { handleSendMessageChat } from "./../function/index";
 const FixedPlugin = () => {
   const [chatLogs, setChatLogs] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -11,9 +13,54 @@ const FixedPlugin = () => {
   const inputRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [socket, setSocket] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
 
- 
+  const setRecieveMessage =(data) => {
+    console.log((prevMessages) => [...prevMessages, { role: "bot", content: data.message }]);
+    setMessages((prevMessages) => [...prevMessages, { role: "bot", content: data.message }]);
+  };
+  const connectSocket = () => {
+    console.log("Connecting");
+    const newSocket = io("http://192.168.43.106:5000/"); // Replace with your server URL
+
+    newSocket.on("connect", () => {
+      console.log("Socket connected");
+      newSocket.emit("identify", { type: "user", name: name, email: email }); // Replace with your server URL
+    });
+
+    newSocket.on("sendMessage", (data) => {
+      // console.log(data);
+      setRecieveMessage(data);
+      // setMessages((prevMessages) => [...prevMessages, { role: "bot", content: data }]);
+
+      // newSocket.emit("sendMessage", {message: data});
+      // Replace with your server URL
+
+      // setReceivedMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      setChat(false);
+      newSocket.disconnect();
+    };
+  };
+  const messageSender = () => {
+    if(inputText==''){
+      alert('Please enter something!');
+    }else{
+    if (socket !== null) {
+      socket.emit("sendMessage", { message: inputText });
+      setMessages((prevMessages) => [...prevMessages, { role: "user", content: inputText }]);
+    } else {
+      alert("Not connected to server!");
+    }
+  }
+  };
 
   const toggleChatBox = () => {
     setIsChatBoxOpen((prevState) => !prevState);
@@ -28,6 +75,10 @@ const FixedPlugin = () => {
               type="Name"
               className="form-control form-control-lg"
               placeholder="Name"
+              value={name}
+              onChange={(event) => {
+                setName(event.target.value);
+              }}
             />
           </div>
           <div className="mb-3">
@@ -36,6 +87,10 @@ const FixedPlugin = () => {
               className="form-control form-control-lg"
               placeholder="Email"
               aria-label="Email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
             />
           </div>
 
@@ -43,6 +98,7 @@ const FixedPlugin = () => {
             className="btn bg-gradient-dark w-100"
             onClick={() => {
               setChat(!chat);
+              connectSocket();
             }}
           >
             Continue
@@ -51,23 +107,6 @@ const FixedPlugin = () => {
       </div>
     );
   };
-
-  // const handleSendMessageChat = () => {
-  //   if (inputText.trim() === "") return;
-
-  //   const newMessage = {
-  //     text: inputText,
-  //     fromUser: true,
-  //   };
-
-  //   const newMessage2 = {
-  //     text: inputText,
-  //     fromUser: false,
-  //   };
-  //   setMessages([...messages, newMessage2, newMessage]);
-
-  //   setInputText("");
-  // };
 
   return (
     <div className="g-sidenav-show   bg-gray-100">
@@ -78,7 +117,9 @@ const FixedPlugin = () => {
             isChatBoxOpen ? "show" : ""
           }`}
         >
-          <i style={{color:"black"}} className="fa fa-cog py-2"> </i>
+          <i style={{ color: "black" }} className="fa fa-cog py-2">
+            {" "}
+          </i>
         </a>
         <div className="card shadow-lg">
           <div className="card-header pb-0 pt-3 ">
@@ -88,7 +129,7 @@ const FixedPlugin = () => {
             </div>
             <div onClick={toggleChatBox} className="float-end mt-4">
               <button className="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                <i style={{color:"black"}} className="fa fa-close"></i>
+                <i style={{ color: "black" }} className="fa fa-close"></i>
               </button>
             </div>
           </div>
@@ -100,10 +141,20 @@ const FixedPlugin = () => {
                 <div className="">
                   {messages.map((message, index) => (
                     <div
-                      key={index}
-                      className={`message ${message.role=='user' ? "user" : "bot"}`}
-                      style={{ textAlign: ` ${message.role =='user' ? "start" : "end"}` }}
+                      key={index} 
+                      className={`message ${
+                        message.role == "user" ? "user" : "bot"
+                      }`}
+                      style={{
+                        textAlign: ` ${
+                          message.role == "user" ? "end" : "start"
+                        }`,
+                        color: ` ${
+                          message.role == "user" ? "black" : "blue"
+                        }`
+                      }}
                     >
+                      
                       {message.content}
                     </div>
                   ))}
@@ -126,16 +177,61 @@ const FixedPlugin = () => {
                   <div className="col-auto">
                     <button
                       className="btn btn-primary"
-                      onClick={async ()=>{const responce =await handleSendMessageChat(messages,inputText); setMessages(responce);setInputText('');}}
+                      onClick={async () => {
+                        messageSender();
+                        // const responce = await handleSendMessageChat(
+                        //   messages,
+                        //   inputText
+                        // );
+                        // setMessages(responce);
+                        // setInputText("");
+                      }}
                     >
-                      <i  className="fa fa-paper-plane"></i>
+                      <i className="fa fa-paper-plane"></i>
                     </button>
                   </div>
                 </div>
               </div>
             </>
           ) : (
-            <LoginInfo />
+            <div className="card-body pt-sm-3 pt-0 d-flex align-items-center justify-content-center ">
+              {/* Your card body content goes here */}
+              <div className="card-body pt-sm-3 pt-0 overflow-auto">
+                <div className="mb-3">
+                  <input
+                    type="Name"
+                    className="form-control form-control-lg"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                    }}
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    className="form-control form-control-lg"
+                    placeholder="Email"
+                    aria-label="Email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                    }}
+                  />
+                </div>
+
+                <a
+                  className="btn bg-gradient-dark w-100"
+                  onClick={() => {
+                    setChat(!chat);
+                    connectSocket();
+                  }}
+                >
+                  Continue
+                </a>
+              </div>
+            </div>
           )}
         </div>
       </div>

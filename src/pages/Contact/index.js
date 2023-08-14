@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { sendMail } from "./../../function/index";
 function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -7,9 +8,7 @@ function Contact() {
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // You can implement your form submission logic here
-    // For example, send the form data to a server or display a confirmation message
+    sendMail(name, email, subject, message);
   };
 
   return (
@@ -43,7 +42,9 @@ function Contact() {
               <div className="phone">
                 <i className="bi bi-phone"></i>
                 <h4>Call:</h4>
-                <p><a href="tel:+923056719020">+923056719020</a></p>
+                <p>
+                  <a href="tel:+923056719020">+923056719020</a>
+                </p>
               </div>
               <iframe
                 title="Google Map"
@@ -56,7 +57,7 @@ function Contact() {
           </div>
 
           <div className="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-            <form onSubmit={handleSubmit} className="php-email-form">
+            <form className="php-email-form">
               <div className="row">
                 <div className="form-group col-md-6">
                   <label htmlFor="name">Your Name</label>
@@ -114,7 +115,13 @@ function Contact() {
                 </div>
               </div>
               <div className="text-center">
-                <button type="submit">Send Message</button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="btn bg-gradient-info btn-fill pull-right"
+                >
+                  Send Mail
+                </button>
               </div>
             </form>
           </div>

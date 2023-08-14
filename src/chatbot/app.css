@@ -8,3 +8,10 @@
     flex-direction: column;
     justify-content: space-between; /* Add space between messages and input */
   }
+
+  .message{
+    margin:10px;
+    padding:5px 10px 5px 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+  }

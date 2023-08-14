@@ -1,20 +1,90 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "./../../component/ModalChat/index";
 
 import { handleSendMessageChat } from "./../../function/index";
-function Conversations() {
-  const conversations = [
+import io from "socket.io-client";
+
+function ConversationsScreen() {
+  const [conversations, setConversations] = useState([
     {
       name: "Nouman Hayat",
       email: "noumanhayat35@gmail.com",
       socketid: "",
-      message: [],
+      conversation: [],
 
       // Add other properties as needed
     },
-  ];
-  const [messages, setMessages] = useState([{role: "user",content:'hello world!'},{role: "system",content:'hello world!'}]);
-  const [inputText, setInputText] = useState("");
+  ]);
+  const [socket, setSocket] = useState(null);
+  useEffect(() => {
+    console.log("Connecting");
+    const newSocket = io("http://192.168.43.106:5000/"); // Replace with your server URL
+
+    newSocket.on("connect", () => {
+      console.log("Socket connected");
+      newSocket.emit("identify", { type: "admin" }); // Replace with your server URL
+    });
+
+    newSocket.on("users", (data) => {
+      setConversations(data);
+      console.log(data);
+    });
+    newSocket.on("sendMessage", (data) => {
+      setConversations(prevData => {
+        const updatedData = prevData.map(item => {
+          if (item.id === data.to) {
+            return {
+              ...item,
+              conversation: [...item.conversation, {role: "bot", content: data.data}]
+            };
+          }
+          return item;
+        });
+        return updatedData;
+      });
+      alert("Sent message")
+    })
+
+    setSocket(newSocket);
+
+    return () => {
+      // setChat(false);
+      newSocket.disconnect();
+    };
+  }, []);
+  // const conversations = [
+  //   {
+  //     name: "Nouman Hayat",
+  //     email: "noumanhayat35@gmail.com",
+  //     socketid: "",
+  //     message: [],
+
+  //     // Add other properties as needed
+  //   },
+  // ];
+  
+  const [inputText, setInputText] = useState("Value v");
+  const addMessage = (id, newMessage) => {
+    setConversations(prevData => {
+      const updatedData = prevData.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            conversation: [...item.conversation, newMessage]
+          };
+        }
+        return item;
+      });
+      return updatedData;
+    });
+    if(socket!==null){
+      socket.emit('message',{to:id,content: newMessage});
+    }else{
+      alert("No socket found")
+    }
+    alert('Work');
+
+  };
   const Card = ({ conversation }) => {
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -51,7 +121,7 @@ function Conversations() {
                       style={{}}
                     >
                       <div className="">
-                        {messages.map((message, index) => (
+                        {conversation.conversation.map((message, index) => (
                           <div
                             key={index}
                             className={`message ${
@@ -59,7 +129,7 @@ function Conversations() {
                             }`}
                             style={{
                               textAlign: ` ${
-                                message.role == "user" ? "start" : "end"
+                                message.role == "user" ? "end" : "start"
                               }`,
                             }}
                           >
@@ -72,13 +142,19 @@ function Conversations() {
                 </div>
                 <div className="col-md-4">
                   <div className="card card-user">
+                  <form >
                     <div className="card-body">
+                    
                       <textarea
+                        autoFocus="autoFocus"
                         rows="4"
                         cols="80"
                         className="form-control"
                         placeholder="Here can be your Message"
-                        value=""
+                        onChange={(e) => {
+                          setInputText(e.target.value);
+                        }}
+                        value={inputText}
                       >
                         Lamborghini Mercy, Your chick she so thirsty, I'm in
                         that two seat Lambo.
@@ -86,10 +162,12 @@ function Conversations() {
                     </div>
 
                     <div className="button-container mr-auto ml-auto">
-                      <button type="button" className="btn bg-gradient-info ">
+                      <button type="button" onClick={()=>{addMessage(conversation.id,{ role: "user", content: inputText },)}} className="btn bg-gradient-info ">
                         Send
                       </button>
+                      
                     </div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -112,6 +190,7 @@ function Conversations() {
               <ul className="list-group">
                 {conversations.map((conversation, index) => (
                   <Card key={index} conversation={conversation} />
+                  // {Card({key: index,conversation})}
                 ))}
               </ul>
             </div>
@@ -122,4 +201,4 @@ function Conversations() {
   );
 }
 
-export default Conversations;
+export default ConversationsScreen;
