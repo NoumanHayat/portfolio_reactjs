@@ -6,14 +6,12 @@ import io from "socket.io-client";
 
 function ConversationsScreen() {
   const [conversations, setConversations] = useState([
-    {
-      name: "Nouman Hayat",
-      email: "noumanhayat35@gmail.com",
-      socketid: "",
-      conversation: [],
-
-      // Add other properties as needed
-    },
+    // {
+    //   name: "Nouman Hayat",
+    //   email: "noumanhayat35@gmail.com",
+    //   socketid: "",
+    //   conversation: [],
+    // },
   ]);
   const [socket, setSocket] = useState(null);
   useEffect(() => {
@@ -30,21 +28,37 @@ function ConversationsScreen() {
       console.log(data);
     });
     newSocket.on("sendMessage", (data) => {
-      setConversations(prevData => {
-        const updatedData = prevData.map(item => {
+      setConversations((prevData) => {
+        const updatedData = prevData.map((item) => {
           if (item.id === data.to) {
             return {
               ...item,
-              conversation: [...item.conversation, {role: "bot", content: data.data}]
+              conversation: [
+                ...item.conversation,
+                { role: "bot", content: data.data },
+              ],
             };
           }
           return item;
         });
         return updatedData;
       });
-      alert("Sent message")
-    })
-
+      // alert("Sent message")
+    });
+    newSocket.on("add", (data) => {
+      addNewUser(data);
+      // const updatedItems = [...conversations, data];
+      // setConversations(updatedItems);
+      // alert("Sent message")
+    });
+    newSocket.on("remove", (data) => {
+      setConversations((prevData) => {
+        const updatedData = prevData.filter((item) => {
+            return item.id !== data.socketID;
+        });
+        return updatedData;
+      });
+    });
     setSocket(newSocket);
 
     return () => {
@@ -52,38 +66,30 @@ function ConversationsScreen() {
       newSocket.disconnect();
     };
   }, []);
-  // const conversations = [
-  //   {
-  //     name: "Nouman Hayat",
-  //     email: "noumanhayat35@gmail.com",
-  //     socketid: "",
-  //     message: [],
-
-  //     // Add other properties as needed
-  //   },
-  // ];
-  
   const [inputText, setInputText] = useState("Value v");
   const addMessage = (id, newMessage) => {
-    setConversations(prevData => {
-      const updatedData = prevData.map(item => {
+    setConversations((prevData) => {
+      const updatedData = prevData.map((item) => {
         if (item.id === id) {
           return {
             ...item,
-            conversation: [...item.conversation, newMessage]
+            conversation: [...item.conversation, newMessage],
           };
         }
         return item;
       });
       return updatedData;
     });
-    if(socket!==null){
-      socket.emit('message',{to:id,content: newMessage});
-    }else{
-      alert("No socket found")
+    if (socket !== null) {
+      socket.emit("message", { to: id, content: newMessage });
+    } else {
+      alert("No socket found");
     }
-    alert('Work');
-
+    alert("Work");
+  };
+  const addNewUser = (data) => {
+    // const updatedItems = [...conversations, data];
+    setConversations((prevMessages) => [...prevMessages, data]);
   };
   const Card = ({ conversation }) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -142,31 +148,38 @@ function ConversationsScreen() {
                 </div>
                 <div className="col-md-4">
                   <div className="card card-user">
-                  <form >
-                    <div className="card-body">
-                    
-                      <textarea
-                        autoFocus="autoFocus"
-                        rows="4"
-                        cols="80"
-                        className="form-control"
-                        placeholder="Here can be your Message"
-                        onChange={(e) => {
-                          setInputText(e.target.value);
-                        }}
-                        value={inputText}
-                      >
-                        Lamborghini Mercy, Your chick she so thirsty, I'm in
-                        that two seat Lambo.
-                      </textarea>
-                    </div>
+                    <form>
+                      <div className="card-body">
+                        <textarea
+                          autoFocus="autoFocus"
+                          rows="4"
+                          cols="80"
+                          className="form-control"
+                          placeholder="Here can be your Message"
+                          onChange={(e) => {
+                            setInputText(e.target.value);
+                          }}
+                          value={inputText}
+                        >
+                          Lamborghini Mercy, Your chick she so thirsty, I'm in
+                          that two seat Lambo.
+                        </textarea>
+                      </div>
 
-                    <div className="button-container mr-auto ml-auto">
-                      <button type="button" onClick={()=>{addMessage(conversation.id,{ role: "user", content: inputText },)}} className="btn bg-gradient-info ">
-                        Send
-                      </button>
-                      
-                    </div>
+                      <div className="button-container mr-auto ml-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            addMessage(conversation.id, {
+                              role: "user",
+                              content: inputText,
+                            });
+                          }}
+                          className="btn bg-gradient-info "
+                        >
+                          Send
+                        </button>
+                      </div>
                     </form>
                   </div>
                 </div>
