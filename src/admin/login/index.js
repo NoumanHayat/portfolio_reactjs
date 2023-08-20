@@ -1,9 +1,12 @@
-import React,{useEffect} from "react";
+import React,{useEffect,useState} from "react";
 import  BackgroundImageCover  from "./../../assets/img/hero-bg2.jpg";
 import HeroBackground from '../../assets/img/hero-bg.jpg'
 // import './completeStyle.css';
 import './completeStyle.css';
-function LoginPage() {
+import {signIn} from './../../function/index'
+function LoginPage({changeLoginStatus}) {
+  const [email,setEmail]=useState('noumancanava@gmail.com');
+  const [password,setPassword]=useState('nomi12345');
   useEffect(() =>{
 
   },[])
@@ -33,6 +36,8 @@ function LoginPage() {
                             className="form-control"
                             placeholder="Email"
                             aria-label="Email"
+                            value={email}
+                            onChange={(e)=>{setEmail(e.target.value);}}
                             aria-describedby="email-addon"
                           />
                         </div>
@@ -43,6 +48,8 @@ function LoginPage() {
                             className="form-control"
                             placeholder="Password"
                             aria-label="Password"
+                            value={password}
+                            onChange={(e)=>{setPassword(e.target.value);}}
                             aria-describedby="password-addon"
                           />
                         </div>
@@ -63,6 +70,7 @@ function LoginPage() {
                         <div className="text-center">
                           <button
                             type="button"
+                            onClick={async ()=>{let response=await signIn(email,password); console.log(response)  ;changeLoginStatus(response) }}
                             className="btn bg-gradient-info w-100 mt-4 mb-0"
                           >
                             Sign in

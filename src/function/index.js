@@ -1,5 +1,7 @@
 import io from "socket.io-client";
 import axios from "axios";
+const ip = "192.168.43.106";
+let isLogined = false;
 export const testingFunction = (value) => {
   console.log("Working ...");
   const newSocket = io("http://localhost:5000/");
@@ -7,14 +9,66 @@ export const testingFunction = (value) => {
   newSocket.on("message", (data) => {
     alert(data);
   });
-  newSocket.on("sendMessage",(data) => {
+  newSocket.on("sendMessage", (data) => {
     alert(data);
-  })
+  });
 };
+const autoLogin = async (props) => {};
+const logout = async (props) => {};
+export const signIn = async (email, password) => {
+  try {
+    const response = await axios.post(`http://${ip}:5000/userRoutes/signin`, {
+      email: email,
+      password: password,
+    });
 
-export const loginCheck = () => {
-  console.log("Working");
-  return true;
+    let token = response.data.token;
+    let userId = response.data.id;
+
+    if (response.data.status === "success") {
+      document.cookie = `id=${response.data.id}`;
+      document.cookie = `token=${response.data.token}`;
+      isLogined = true;
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    alert(error.message);
+
+    return false;
+  }
+};
+const signup = async (props) => {};
+export const LoginCheck = async () => {
+  const cookiesArray = document.cookie.split(";");
+  let token = "null";
+  for (let i = 0; i < cookiesArray.length; i++) {
+    const cookie = cookiesArray[i].trim();
+    if (cookie.startsWith("token=")) {
+      token = cookie.split("=")[1];
+      break;
+    }
+  }
+  try {
+    const response = await axios.post(
+      `http://${ip}:5000/userRoutes/checkLogin`,
+      {
+        token: `Check ${token}`,
+      }
+    );
+
+    if (response.data.status === "success") {
+      console.log("Success");
+      return true;
+    } else {
+      console.log(response.data.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
 };
 export const chatGpt = async (messages, inputText) => {
   if (inputText.trim() === "") {
@@ -89,23 +143,90 @@ export const handleSendMessageChat = async (messages, inputText) => {
   console.log(newMessages);
   return newMessages;
 };
-export const sendMail = async ( name='', email='n@gmail.com', subject='', message='' ) => {
-  console.log("Here is your message");
-
-  const response = await axios.post(
-    "//localhost:5000/api/Contact",
-    {
-      name, email, subject, message
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
+export const sendMail = async (
+  email = "noumanhayat35@gmail.com",
+  subject = "texting",
+  message = "texting"
+) => {
+  const cookiesArray = document.cookie.split(";");
+  let token = "null";
+  for (let i = 0; i < cookiesArray.length; i++) {
+    const cookie = cookiesArray[i].trim();
+    if (cookie.startsWith("token=")) {
+      token = cookie.split("=")[1];
+      break;
     }
-  );
-  alert("Thanks for sending us messages we will contact you through email");
-  return response;
+  }
+  try {
+    const response = await axios.post(`http://${ip}:5000/api/sendEmail`, {
+      token: `Check ${token}`,
+      email,
+      subject,
+      message,
+    });
+    if ((response.data.status = "success")) {
+      alert("Successfully send email");
+    }else{
+      alert("Fail to send");
+    }
+  } catch (error) {
+    alert(error.message);
+  }
 };
-export const clientSiket = async ()=>{
+export const clientSiket = async () => {};
+export const getContent = async () => {
+  const cookiesArray = document.cookie.split(";");
+  let token = "null";
+  for (let i = 0; i < cookiesArray.length; i++) {
+    const cookie = cookiesArray[i].trim();
+    if (cookie.startsWith("token=")) {
+      token = cookie.split("=")[1];
+      break;
+    }
+  }
+  try {
+    const response = await axios.post(`http://${ip}:5000/api/getContact`, {
+      token: `Check ${token}`,
+    });
 
+    if (response.data.status === "success") {
+      return response.data.message;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    alert(error.message);
+
+    return [];
+  }
+};
+export const sendContact = async (
+  email = "noumanhayat35@gmail.com",
+  subject = "texting",
+  message = "texting",
+  name = "noumanhayat35"
+) => {
+  try {
+    const response = await axios.post(`http://${ip}:5000/api/sendContact`, {
+      name: name,
+      email: email,
+      subject: subject,
+      message: message,
+    });
+    alert("Successfully send email");
+  } catch (error) {
+    alert(error.message);
+  }
+};
+export const deleteContact= async (name,email,subject)=>{
+  try {
+    const response = await axios.post(`http://${ip}:5000/api/deleteContact`, {
+      name: name,
+      email: email,
+      subject: subject,
+    });
+    alert("Successfully Deleted");
+  } catch (error) {
+    alert(error.message);
+  }
 }

@@ -1,7 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../component/ModalAdmin/index";
-import './style.css';
+import "./style.css";
+import { getContent,sendMail,deleteContact } from "./../../function/index";
 function EmailInformation() {
+  const [email, setEmail] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const temp = await getContent();
+      setEmail(temp);
+      console.log(temp);
+      // ...
+    }
+    fetchData();
+  }, [setEmail]);
   return (
     <div className="row">
       <div className="col-md-7 mt-4">
@@ -11,24 +23,15 @@ function EmailInformation() {
           </div>
           <div className="card-body pt-4 p-3">
             <ul className="list-group">
-              <EmailItem
-                name="Oliver Liam"
-                companyName="Viking Burrito"
-                email="oliver@burrito.com"
-                vatNumber="FRB1235476"
-              />
-              <EmailItem
-                name="Lucas Harper"
-                companyName="Stone Tech Zone"
-                email="lucas@stone-tech.com"
-                vatNumber="FRB1235476"
-              />
-              <EmailItem
-                name="Ethan James"
-                companyName="Fiber Notion"
-                email="ethan@fiber.com"
-                vatNumber="FRB1235476"
-              />
+              {email.map((item, index) => (
+                <EmailItem
+                  key={index}
+                  name={item.name}
+                  Message={item.message}
+                  email={item.email}
+                  Subject={item.subject}
+                />
+              ))}
             </ul>
           </div>
         </div>
@@ -37,11 +40,13 @@ function EmailInformation() {
   );
 }
 
-function EmailItem({ name, companyName, email, vatNumber }) {
+function EmailItem({ name, Message, email, Subject }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenView, setIsModalOpenView] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
 
+  const [subjectReply,setSubjectReply] = useState('');
+  const [messageReply,setMessageReply] = useState('');
   const openModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -61,13 +66,13 @@ function EmailItem({ name, companyName, email, vatNumber }) {
           <span className="text-xs">
             Subject:{" "}
             <span className="text-dark ms-sm-2 font-weight-bold">
-              {vatNumber}
+              {Subject}
             </span>
           </span>
           <span className="text-xs">
             Message:{" "}
             <span className="text-dark ms-sm-2 font-weight-bold">
-              {vatNumber}
+              {Message}
             </span>
           </span>
         </div>
@@ -124,7 +129,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               className="form-control"
                               disabled
                               placeholder="email"
-                              value="nouman@gmail.com"
+                              value={email}
                             />
                           </div>
                         </div>
@@ -136,7 +141,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               className="form-control"
                               placeholder="Username"
                               disabled
-                              value="michael23"
+                              value={name}
                             />
                           </div>
                         </div>
@@ -150,7 +155,8 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               type="text"
                               className="form-control"
                               placeholder="Subject here..."
-                              value=""
+                              value={subjectReply}
+                              onChange={(e)=>{setSubjectReply(e.target.value)}}
                             />
                           </div>
                         </div>
@@ -164,10 +170,11 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               cols="80"
                               className="form-control"
                               placeholder="Here can be your Message"
-                              value=""
+                              // messageReply,setMessageReply
+                              value={messageReply}
+                              onChange={(e)=>{setMessageReply(e.target.value)}}
                             >
-                              Lamborghini Mercy, Your chick she so thirsty, I'm
-                              in that two seat Lambo.
+                              
                             </textarea>
                           </div>
                         </div>
@@ -176,6 +183,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                       <button
                         type="button"
                         className="btn bg-gradient-info btn-fill pull-right"
+                        onClick={()=>{ sendMail(email,subjectReply,messageReply)}}
                       >
                         Send Mail
                       </button>
@@ -189,20 +197,15 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                   <div className="card-body">
                     <div className="author">
                       <a href="#">
-                        <h5 className="title">Subject</h5>
+                        <h5 className="title">{Subject}</h5>
                       </a>
                     </div>
                     <p className="description text-center">
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. The point of using Lorem Ipsum is that it
-                      has a more-or-less normal distribution of letters, as
-                      opposed to using 'Content here, content here', making it
-                      look like readable English.
+                    {Message}
                     </p>
                   </div>
                   <hr />
-                  <div className="button-container mr-auto ml-auto">
+                  {/* <div className="button-container mr-auto ml-auto">
                     <button
                       href="#"
                       className="btn btn-simple btn-link btn-icon"
@@ -221,7 +224,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                     >
                       <i className="fa fa-google-plus-square"></i>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -250,7 +253,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               className="form-control"
                               disabled
                               placeholder="email"
-                              value="nouman@gmail.com"
+                              value={email}
                             />
                           </div>
                         </div>
@@ -262,7 +265,7 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               className="form-control"
                               placeholder="Username"
                               disabled
-                              value="michael23"
+                              value={name}
                             />
                           </div>
                         </div>
@@ -276,7 +279,8 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               type="text"
                               className="form-control"
                               placeholder="Subject here..."
-                              value=""
+                              disabled
+                              value={Subject}
                             />
                           </div>
                         </div>
@@ -290,7 +294,8 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                               cols="80"
                               className="form-control"
                               placeholder="Here can be your Message"
-                              value=""
+                              disabled
+                              value={Message}
                             >
                               Lamborghini Mercy, Your chick she so thirsty, I'm
                               in that two seat Lambo.
@@ -325,16 +330,16 @@ function EmailItem({ name, companyName, email, vatNumber }) {
                     </h4>
                   </div>
                   <div className="button-row button-container">
-                  <button
-                        type="button"
-                        className="btn bg-gradient-info btn-fill pull-right"
-                      >
-                        Yes
-                      </button>
-                    
+                    <button
+                      type="button"
+                      className="btn bg-gradient-info btn-fill pull-right"
+                      onClick={()=>{deleteContact(name,email,Subject)}}
+                    >
+                      Yes
+                    </button>
+
                     <button className="btn btn-danger">No</button>
                   </div>
-                  
                 </div>
               </div>
             </div>

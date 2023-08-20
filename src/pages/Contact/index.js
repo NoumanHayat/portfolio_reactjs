@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./styles.css";
-import { sendMail } from "./../../function/index";
+import { sendContact } from "./../../function/index";
 function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -8,7 +8,11 @@ function Contact() {
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
-    sendMail(name, email, subject, message);
+    sendContact( email, subject, message,name);
+    setName('');
+    setEmail('');
+    setSubject('');
+    setMessage('');
   };
 
   return (

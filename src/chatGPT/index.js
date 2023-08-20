@@ -12,7 +12,7 @@ const FixedPlugin = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
 
-
+ 
  
 
   const toggleChatBox = () => {

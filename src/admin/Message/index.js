@@ -3,17 +3,12 @@ import Modal from "./../../component/ModalChat/index";
 
 import { handleSendMessageChat } from "./../../function/index";
 import io from "socket.io-client";
-
+import Card from './Card';
+import { Textarea } from '@mantine/core';
 function ConversationsScreen() {
-  const [conversations, setConversations] = useState([
-    // {
-    //   name: "Nouman Hayat",
-    //   email: "noumanhayat35@gmail.com",
-    //   socketid: "",
-    //   conversation: [],
-    // },
-  ]);
+  const [conversations, setConversations] = useState([]);
   const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     console.log("Connecting");
     const newSocket = io("http://192.168.43.106:5000/"); // Replace with your server URL
@@ -54,7 +49,7 @@ function ConversationsScreen() {
     newSocket.on("remove", (data) => {
       setConversations((prevData) => {
         const updatedData = prevData.filter((item) => {
-            return item.id !== data.socketID;
+          return item.id !== data.socketID;
         });
         return updatedData;
       });
@@ -66,7 +61,6 @@ function ConversationsScreen() {
       newSocket.disconnect();
     };
   }, []);
-  const [inputText, setInputText] = useState("Value v");
   const addMessage = (id, newMessage) => {
     setConversations((prevData) => {
       const updatedData = prevData.map((item) => {
@@ -85,112 +79,12 @@ function ConversationsScreen() {
     } else {
       alert("No socket found");
     }
-    alert("Work");
+    // alert("Work");
   };
   const addNewUser = (data) => {
     // const updatedItems = [...conversations, data];
     setConversations((prevMessages) => [...prevMessages, data]);
   };
-  const Card = ({ conversation }) => {
-    const [modalOpen, setModalOpen] = useState(false);
-
-    return (
-      <>
-        <li className="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-          <div className="avatar me-3"></div>
-          <div className="d-flex align-items-start flex-column justify-content-center">
-            <h6 className="mb-0 text-sm">{conversation.name}</h6>
-            <p className="mb-0 text-xs">{conversation.email}</p>
-          </div>
-          <a
-            className="btn btn-link pe-3 ps-0 mb-0 ms-auto"
-            onClick={() => {
-              setModalOpen(true);
-            }}
-          >
-            Reply
-          </a>
-        </li>
-        <Modal
-          isOpen={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        >
-          <div className="content">
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-md-8">
-                  <div className="card">
-                    <div
-                      className="card-body pt-sm-3 pt-0 overflow-auto"
-                      style={{}}
-                    >
-                      <div className="">
-                        {conversation.conversation.map((message, index) => (
-                          <div
-                            key={index}
-                            className={`message ${
-                              message.role == "user" ? "user" : "bot"
-                            }`}
-                            style={{
-                              textAlign: ` ${
-                                message.role == "user" ? "end" : "start"
-                              }`,
-                            }}
-                          >
-                            {message.content}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="card card-user">
-                    <form>
-                      <div className="card-body">
-                        <textarea
-                          autoFocus="autoFocus"
-                          rows="4"
-                          cols="80"
-                          className="form-control"
-                          placeholder="Here can be your Message"
-                          onChange={(e) => {
-                            setInputText(e.target.value);
-                          }}
-                          value={inputText}
-                        >
-                          Lamborghini Mercy, Your chick she so thirsty, I'm in
-                          that two seat Lambo.
-                        </textarea>
-                      </div>
-
-                      <div className="button-container mr-auto ml-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            addMessage(conversation.id, {
-                              role: "user",
-                              content: inputText,
-                            });
-                          }}
-                          className="btn bg-gradient-info "
-                        >
-                          Send
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      </>
-    );
-  };
-
   return (
     <div className="container-fluid py-4">
       <div className="row">
@@ -202,8 +96,7 @@ function ConversationsScreen() {
             <div className="card-body p-3">
               <ul className="list-group">
                 {conversations.map((conversation, index) => (
-                  <Card key={index} conversation={conversation} />
-                  // {Card({key: index,conversation})}
+                  <Card key={index} conversation={conversation} addMessage={addMessage} />
                 ))}
               </ul>
             </div>
